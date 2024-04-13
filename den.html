@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task Tracker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    h2, h3 {
+      text-align: center;
+    }
+
+    #taskForm {
+      width: 300px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    select {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 4px;
+      background-color: #63b239;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #stopButton {
+      background-color: #f44336;
+    }
+
+    #stopButton:hover {
+      background-color: #d32f2f;
+    }
+
+    #stopwatch {
+      text-align: center;
+      font-size: 24px;
+      margin-top: 20px;
+    }
+
+    #taskTable {
+      width: 80%;
+      margin: 20px auto;
+      border-collapse: collapse;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    #taskTable th, #taskTable td {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+
+    #taskTable th {
+      background-color: #af774c;
+      color: white;
+    }
+
+    #taskTable tbody tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    #taskTable tbody tr:hover {
+      background-color: #ddd;
+    }
+
+ 
+  </style>
+</head>
+<body>
+  <h2>Task Tracker</h2>
+  
+  <!-- Input Form -->
+  <form id="taskForm">
+    <label for="category">Category:</label>
+    <!-- <input type="text" id="category" required>
+     -->
+     <select name="" id="category">
+        <option value="">-</option>
+        <option value="Work">Work</option>
+        <option value="Personal">Personal Stuff
+        </option>
+     </select>
+    <br>
+    <label for="subCategory">Sub Category:</label>
+    <!-- <input type="text" id="subCategory" required> -->
+    <select name="" id="subCategory">
+        <option value="">-</option>
+        <option value="Meeting">Meeting</option>
+        <option value="Project"> Project
+        </option>
+     </select>
+    <br>
+    <label for="task">Task:</label>
+    <select name="" id="task">
+        <option value="">-</option>
+        <option value="Client">Client Meeting</option>
+        <option value="Documentation"> Documentation
+        </option>
+        <option value="Daily Scrum">Daily Scrum</option>
+        <option value="Mall Handler Module">Mall Handler Module</option>
+     </select>
+    <br>
+    <button type="button" id="startButton" onclick="startTimer()">Start</button>
+    <button type="button" id="stopButton" onclick="stopTimer()" style="display:none;">Stop</button>
+    <button type="button" onclick="resetTimer()">Reset</button>
+  </form>
+
+  <!-- Stopwatch -->
+  <h3>Stopwatch</h3>
+  <div id="stopwatch">00:00:00</div>
+
+  <!-- Table -->
+  <h3>Task Table</h3>
+  <table id="taskTable">
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th>Sub Category</th>
+        <th>Task</th>
+        <th>Duration</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Table rows will be dynamically added here -->
+    </tbody>
+  </table>
+
+  <script>
+    let timerInterval;
+    let startTime;
+    let elapsedTime = 0;
+
+    function startTimer() {
+      startTime = Date.now() - elapsedTime;
+      timerInterval = setInterval(updateTimer, 1000);
+      document.getElementById("startButton").style.display = "none";
+      document.getElementById("stopButton").style.display = "inline";
+    }
+
+    function stopTimer() {
+      clearInterval(timerInterval);
+      updateTable();
+      document.getElementById("startButton").style.display = "inline";
+      document.getElementById("stopButton").style.display = "none";
+    }
+
+    function updateTable() {
+  const category = document.getElementById('category').value;
+  const subCategory = document.getElementById('subCategory').value;
+  const task = document.getElementById('task').value;
+  const duration = document.getElementById('stopwatch').textContent;
+
+  const table = document.getElementById('taskTable').getElementsByTagName('tbody')[0];
+  const newRow = table.insertRow();
+  const cell1 = newRow.insertCell(0);
+  const cell2 = newRow.insertCell(1);
+  const cell3 = newRow.insertCell(2);
+  const cell4 = newRow.insertCell(3);
+  const cell5 = newRow.insertCell(4);
+  cell1.textContent = category;
+  cell2.textContent = subCategory;
+  cell3.textContent = task;
+  cell4.textContent = duration;
+
+  const deleteButton = document.createElement("button");
+  deleteButton.textContent = "Delete";
+  deleteButton.className = "deleteButton";
+  deleteButton.style.backgroundColor = "#d32f2f"; 
+  deleteButton.style.borderRadius="10px";
+  deleteButton.addEventListener("click", function() {
+    const row = this.parentElement.parentElement;
+    row.parentNode.removeChild(row); // Remove the row from its parent
+  });
+  cell5.appendChild(deleteButton); // Append delete button to cell
+}
+
+
+
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+    //   updateTable();
+      elapsedTime = 0;
+      displayTime(elapsedTime);
+      document.getElementById("startButton").style.display = "inline";
+      document.getElementById("stopButton").style.display = "none";
+    }
+
+    function updateTimer() {
+      const currentTime = Date.now();
+      elapsedTime = currentTime - startTime;
+      displayTime(elapsedTime);
+    }
+
+    function displayTime(time) {
+      const hours = Math.floor(time / (1000 * 60 * 60));
+      const minutes = Math.floor((time % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((time % (1000 * 60)) / 1000);
+      const formattedTime = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+      document.getElementById('stopwatch').textContent = formattedTime;
+    }
+
+    function pad(num) {
+      return num.toString().padStart(2, '0');
+    }
+  </script>
+</body>
+</html>

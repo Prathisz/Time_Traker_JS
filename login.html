@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login & Sign Up</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+
+  input[type="text"],
+  input[type="password"],
+  input[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    box-sizing: border-box;
+  }
+
+  input[type="submit"] {
+    background-color: #4caf50;
+    color: white;
+    cursor: pointer;
+  }
+
+  input[type="submit"]:hover {
+    background-color: #45a049;
+  }
+#submit{
+  background-color:#45a049;
+  width: 100%;
+  border-radius: 3px;
+}
+  .toggle-form {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #666;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h2>Login</h2>
+    <form id="loginForm">
+      <input type="text" id="loginUsername" name="loginUsername" placeholder="Username" required><br>
+      <input type="password" id="loginPassword" name="loginPassword" placeholder="Password" required><br>
+      <!-- <input type="submit" value="Login"> -->
+      <button type="submit" value="Login" id="submit">Login</button>
+    </form>
+    <span class="toggle-form">Don't have an account? <a href="#" onclick="toggleForm()">Sign Up</a></span>
+  </div>
+  
+  <div class="container" style="display: none;" id="signupContainer">
+    <h2>Sign Up</h2>
+    <form id="signupForm">
+      <input type="text" id="signupUsername" name="signupUsername" placeholder="Username" required><br>
+      <input type="text" id="signupEmail" name="signupEmail" placeholder="email" required><br>
+      <input type="password" id="signupPassword" name="signupPassword" placeholder="Password" required><br>
+      <input type="submit" value="Sign Up">
+    </form>
+    <span class="toggle-form">Already have an account? <a href="#" onclick="toggleForm()">Login</a></span>
+   
+  </div>
+  
+  <script>
+    // Function to toggle between login and signup forms
+    function toggleForm() {
+      var loginForm = document.getElementById('loginForm');
+      var signupContainer = document.getElementById('signupContainer');
+  
+      if (loginForm.style.display === 'none') {
+        loginForm.style.display = 'block';
+        signupContainer.style.display = 'none';
+      } else {
+        loginForm.style.display = 'none';
+        signupContainer.style.display = 'block';
+      }
+    }
+  
+    //login 
+    var username = document.getElementById('loginUsername');
+      var password = document.getElementById('loginPassword');
+    let submit=document.getElementById('submit');
+
+    submit.addEventListener('click' , async(e)=>{
+      e.preventDefault();
+      let d=await login();
+      console.log(d);
+    })
+
+   
+
+let storedata;
+async function json_data(){
+  storedata=await fetch('./user.json')
+    .then((res)=>{
+      return res.json();
+    })
+    
+
+    storedata=storedata.users;
+    console.log(storedata);
+    
+  }
+  
+
+
+  function login(){
+    {
+      return new Promise((res,rej)=>{
+        let user=storedata.find((f)=>f.name==username.value&&f.password==password.value);
+
+        if(user){
+          res(user);
+          window.location.href="./den.html"
+        }
+        else{
+          rej("Invalid User");
+        }
+      })
+    }
+  }
+  json_data();
+  </script>
+  </body>
+
+
+
+</html>
